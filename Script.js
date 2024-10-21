@@ -1,12 +1,26 @@
-function filterData() {
+function filterData(event) {
   event.preventDefault();
-  var startdate = document.getElementById("startdate").value;
-    var enddate = document.getElementById("enddate").value;
-  console.log("startinf date: " + startdate);
+  var startdate = new Date(document.getElementById("startdate").value);
+  var enddate = new Date(document.getElementById("enddate").value);
+  
+  console.log("Starting date: " + startdate);
   console.log("Ending date: " + enddate);
-  fetch("https://compute.samford.edu/zohauth/clients/data");
+  
+  const rows = document.querySelectorAll('#data-table tbody tr');
 
+  rows.forEach(row => {
+      const dateCell = row.cells[3].textContent; // Assuming the datetime is in the 4th cell (index 3)
+      const rowDate = new Date(dateCell);
+
+      // Check if the rowDate is within the specified range
+      if (rowDate >= startdate && rowDate <= enddate) {
+          row.style.display = ''; // Show row
+      } else {
+          row.style.display = 'none'; // Hide row
+      }
+  });
 }
+
 async function fetchData() {
   try {
       const response = await fetch('https://compute.samford.edu/zohauth/clients/datajson');
